@@ -19,7 +19,7 @@ PAGES = ["Home", "About Us", "Services", "Fleet", "Book a Ride", "Contact", "FAQ
 # Sidebar Navigation
 # ——————————————————————————————————————————————————————————————
 with st.sidebar:
-    # Replace these URLs with your own hosted images (logo, etc.)
+    # Replace this URL with your own hosted logo image
     st.image(
         "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/logo.png",
         width=150,
@@ -81,7 +81,7 @@ def show_about():
         - **Service Area**: Portland, Eugene, Salem, Keizer, Beaverton, Hillsboro, and surrounding counties.  
         """
     )
-    # Replace the URL below with your own hosted image path
+    # Replace this URL with your own hosted image path
     st.image(
         "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/about_image.jpg",
         use_column_width=True,
@@ -181,7 +181,7 @@ def show_booking_form():
         with col1:
             full_name = st.text_input("Patient Name", max_chars=100)
             phone = st.text_input(
-                "Phone Number", placeholder="e.g., (503) 123-4567"
+                "Phone Number", placeholder="e.g., (253) 561-5714"
             )
             email = st.text_input(
                 "Email Address", placeholder="e.g., name@example.com"
