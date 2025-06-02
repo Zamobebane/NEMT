@@ -62,7 +62,7 @@ def show_home():
     st.subheader("How It Works")
     st.markdown(
         """
-        1. **Book Online or Call Us**: Use our booking form below or dial (503) 123-4567.  
+        1. **Book Online or Call Us**: Use our booking form below or dial (253) 561-5714.  
         2. **Confirm Appointment**: We’ll confirm your pickup time and any special requirements.  
         3. **Ride Comfortably**: Our trained driver arrives, assists you into the vehicle, and takes you to your destination safely.  
         4. **Return Trip**: If needed, schedule your return in advance or request it on the spot.  
@@ -140,7 +140,6 @@ def show_fleet():
         """
     )
 
-    # Replace these URLs with your own hosted images of vehicles
     st.markdown(
         """
         - **Wheelchair Van**  
@@ -252,11 +251,11 @@ def show_contact():
     st.markdown(
         """
         **My Oregon Ride**  
-        1234 Wellness Drive, Suite 100  
-        Portland, OR 97201  
+        12070 SW Fischer Rd Apt A108  
+        Tigard, OR 97224  
 
-        📞 **Phone:** (503) 123-4567  
-        📧 **Email:** info@myoregonride.com  
+        📞 **Phone:** (253) 561-5714  
+        📧 **Email:** myoregonride@gmail.com  
         
         **Office Hours:**  
         Monday – Friday: 7:00 AM – 7:00 PM  
@@ -319,7 +318,7 @@ def show_faq():
 
 
 # ——————————————————————————————————————————————————————————————
-# Main: render the selected page
+# Main logic: render the selected page
 # ——————————————————————————————————————————————————————————————
 if page_selection == "Home":
     show_home()
