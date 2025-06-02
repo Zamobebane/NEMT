@@ -19,19 +19,30 @@ PAGES = ["Home", "About Us", "Services", "Fleet", "Book a Ride", "Contact", "FAQ
 # Sidebar Navigation
 # ——————————————————————————————————————————————————————————————
 with st.sidebar:
-    # Replace this URL with your own hosted logo image
+    # Logo (replace with your actual logo URL)
     st.image(
         "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/logo.png",
         width=150,
     )
-    st.markdown("## My Oregon Ride")
+    st.markdown("<h2 style='text-align:center; color: #4B4B4B;'>My Oregon Ride</h2>", unsafe_allow_html=True)
     page_selection = st.radio("Navigate", PAGES)
+
+# ——————————————————————————————————————————————————————————————
+# Function to display a banner on each page
+# ——————————————————————————————————————————————————————————————
+def show_banner():
+    st.image(
+        "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/banner.jpg",
+        use_column_width=True,
+    )
+    st.markdown("<hr>", unsafe_allow_html=True)
 
 # ——————————————————————————————————————————————————————————————
 # Page helper functions
 # ——————————————————————————————————————————————————————————————
 
 def show_home():
+    show_banner()
     st.title("My Oregon Ride 🚐")
     st.markdown(
         """
@@ -71,6 +82,7 @@ def show_home():
 
 
 def show_about():
+    show_banner()
     st.header("About My Oregon Ride")
     st.markdown(
         """
@@ -81,7 +93,6 @@ def show_about():
         - **Service Area**: Portland, Eugene, Salem, Keizer, Beaverton, Hillsboro, and surrounding counties.  
         """
     )
-    # Replace this URL with your own hosted image path
     st.image(
         "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/about_image.jpg",
         use_column_width=True,
@@ -100,6 +111,7 @@ def show_about():
 
 
 def show_services():
+    show_banner()
     st.header("Our Services")
     st.markdown(
         """
@@ -133,6 +145,7 @@ def show_services():
 
 
 def show_fleet():
+    show_banner()
     st.header("Our Fleet")
     st.markdown(
         """
@@ -167,6 +180,7 @@ def show_fleet():
 
 
 def show_booking_form():
+    show_banner()
     st.header("Book a Ride")
     st.markdown(
         """
@@ -247,6 +261,7 @@ def show_booking_form():
 
 
 def show_contact():
+    show_banner()
     st.header("Contact Us")
     st.markdown(
         """
@@ -285,6 +300,7 @@ def show_contact():
 
 
 def show_faq():
+    show_banner()
     st.header("Frequently Asked Questions (FAQ)")
     faqs = {
         "Do you accept insurance?": (
