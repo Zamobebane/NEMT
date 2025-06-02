@@ -1,352 +1,261 @@
 # app.py
 
 import streamlit as st
-from datetime import datetime
+from PIL import Image
+import base64
 
-# ——————————————————————————————————————————————————————————————
-# Streamlit page configuration
-# ——————————————————————————————————————————————————————————————
+# ------------------------------
+# Page Configuration
+# ------------------------------
 st.set_page_config(
-    page_title="My Oregon Ride | NEMT",
+    page_title="My Oregon Ride - NEMT Services",
     page_icon="🚐",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-# Define the navigation menu items
-PAGES = ["Home", "About Us", "Services", "Fleet", "Book a Ride", "Contact", "FAQ"]
+# ------------------------------
+# CSS and Background Setup
+# ------------------------------
+def set_background_image(image_file):
+    """
+    Injects CSS to set a full-screen background image for the Streamlit app.
+    Expects image_file to be the path to an image in the repo.
+    """
+    with open(image_file, "rb") as img:
+        encoded_string = base64.b64encode(img.read()).decode()
+    css = f"""
+    <style>
+    .stApp {{
+        background: url("data:image/jpeg;base64,{encoded_string}") no-repeat center center fixed;
+        background-size: cover;
+    }}
+    /* Make content containers slightly translucent to stand out */
+    .reportview-container .main .block-container {{
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 12px;
+        padding: 2rem 2rem 2rem 2rem;
+    }}
+    /* Customize header font and color */
+    .header-title {{
+        font-family: 'Helvetica', sans-serif;
+        color: #2c3e50;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }}
+    .subheader {{
+        font-family: 'Helvetica', sans-serif;
+        color: #34495e;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }}
+    /* Style buttons */
+    .stButton>button {{
+        background-color: #2980b9;
+        color: white;
+        border-radius: 8px;
+        height: 3rem;
+        width: 100%;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }}
+    .stButton>button:hover {{
+        background-color: #1f618d;
+        color: #ecf0f1;
+    }}
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
 
-# ——————————————————————————————————————————————————————————————
-# Sidebar Navigation
-# ——————————————————————————————————————————————————————————————
-with st.sidebar:
-    # Logo (replace with your actual logo URL)
-    st.image(
-        "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/logo.png",
-        width=150,
+# Set your background image (place 'background.jpg' in the same folder as app.py)
+set_background_image("background.jpg")
+
+# ------------------------------
+# Sidebar Navigation / Booking Form
+# ------------------------------
+st.sidebar.image("logo.png", use_column_width=True)  # Place a 'logo.png' in the repo for branding (optional)
+
+st.sidebar.markdown("<h2 class='header-title'>Book Your Ride</h2>", unsafe_allow_html=True)
+st.sidebar.write("Complete the form below, and we'll get back to you within minutes. We serve 24/7!")
+
+with st.sidebar.form(key="booking_form"):
+    st.write("### Ride Details")
+    name = st.text_input("Full Name", max_chars=50)
+    phone = st.text_input("Phone Number", max_chars=15, help="e.g., 555-123-4567")
+    email = st.text_input("Email Address", max_chars=100)
+    pickup_address = st.text_input("Pickup Address", max_chars=200)
+    dropoff_address = st.text_input("Drop-off Address", max_chars=200)
+    date = st.date_input("Date of Service")
+    time = st.time_input("Time of Service")
+    wheelchair = st.selectbox(
+        "Do you require wheelchair assistance?",
+        ("No", "Yes")
     )
-    st.markdown("<h2 style='text-align:center; color: #4B4B4B;'>My Oregon Ride</h2>", unsafe_allow_html=True)
-    page_selection = st.radio("Navigate", PAGES)
-
-# ——————————————————————————————————————————————————————————————
-# Function to display a banner on each page
-# ——————————————————————————————————————————————————————————————
-def show_banner():
-    st.image(
-        "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/banner.jpg",
-        use_column_width=True,
+    notes = st.text_area(
+        "Additional Notes / Special Requirements",
+        placeholder="e.g., traveling with oxygen, service animal, etc."
     )
-    st.markdown("<hr>", unsafe_allow_html=True)
+    submit_button = st.form_submit_button(label="Request a Quote")
 
-# ——————————————————————————————————————————————————————————————
-# Page helper functions
-# ——————————————————————————————————————————————————————————————
+if submit_button:
+    # In a real app, you would handle form submission (e.g., send an email or store in a database)
+    st.sidebar.success("Thank you! We received your request and will be in touch shortly.")
+    # Example: st.write("Booking details:", name, phone, email, pickup_address, dropoff_address, date, time, wheelchair, notes)
 
-def show_home():
-    show_banner()
-    st.title("My Oregon Ride 🚐")
-    st.markdown(
-        """
-        **Your Trusted Non-Emergency Medical Transportation Provider in Oregon.**
+# ------------------------------
+# Main Content
+# ------------------------------
 
-        At My Oregon Ride, we specialize in safe, comfortable, and punctual rides to your medical appointments—whether it’s a dialysis session, doctor’s visit, or routine check-up.
+# Header Section
+st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+st.markdown("<h1 class='header-title'>My Oregon Ride</h1>", unsafe_allow_html=True)
+st.markdown("<p class='subheader'><i>Your Trusted 24/7 Non-Emergency Medical Transportation Service</i></p>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-        - **24/7 Availability**  
-        - **Wheelchair & Stretcher-Accessible Vans**  
-        - **Professional, CPR-Certified Drivers**  
-        - **Serving Portland, Eugene, Salem, and Surrounding Areas**  
-        """
-    )
-    st.markdown("---")
+# Brief Introduction
+st.markdown(
+    """
+    **My Oregon Ride** is dedicated to providing safe, reliable, and comfortable non-emergency medical transportation
+    across the Portland area and beyond. With our 24/7 service, professional drivers, and ADA-compliant vehicles,
+    you can rest assured that your medical appointments are just a ride away.
+    """
+)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.subheader("🕒 Punctuality Guaranteed")
-        st.write("We monitor traffic and schedules to ensure you arrive on time.")
-    with col2:
-        st.subheader("💺 Comfortable Rides")
-        st.write("Our vehicles are clean, sanitized, and fully accessible.")
-    with col3:
-        st.subheader("💲 Affordable Rates")
-        st.write("Competitive pricing, accepted insurance, and transparent billing.")
-    st.markdown("---")
+# Two-column layout: About Us and Why Choose Us
+col1, col2 = st.columns(2)
 
-    st.subheader("How It Works")
-    st.markdown(
-        """
-        1. **Book Online or Call Us**: Use our booking form below or dial (253) 561-5714.  
-        2. **Confirm Appointment**: We’ll confirm your pickup time and any special requirements.  
-        3. **Ride Comfortably**: Our trained driver arrives, assists you into the vehicle, and takes you to your destination safely.  
-        4. **Return Trip**: If needed, schedule your return in advance or request it on the spot.  
-        """
-    )
-
-
-def show_about():
-    show_banner()
-    st.header("About My Oregon Ride")
-    st.markdown(
-        """
-        Founded in 2024, My Oregon Ride was created to fill a critical need for reliable, dignified, and safe non-emergency medical transportation (NEMT) across Oregon. Our mission is to empower patients and families with a transportation solution that respects their time, comfort, and medical requirements.
-
-        - **Our Vision**: Every patient deserves access to high-quality transportation for healthcare without stress.  
-        - **Our Mission**: Provide punctual, safe, and comfortable rides—whether you need a wheelchair-accessible van, stretcher service, or ambulation assistance.  
-        - **Service Area**: Portland, Eugene, Salem, Keizer, Beaverton, Hillsboro, and surrounding counties.  
-        """
-    )
-    st.image(
-        "https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/about_image.jpg",
-        use_column_width=True,
-    )
-    st.markdown("---")
-
-    st.subheader("Why Choose Us?")
+with col1:
+    st.markdown("### About Us")
     st.write(
         """
-        - **Fully Licensed & Insured**: Meets all state and federal NEMT regulations.  
-        - **Certified Drivers**: CPR-certified, trained in patient transfers, and background-checked.  
-        - **Modern Fleet**: Each vehicle is sanitized after every trip and equipped to handle wheelchairs, stretchers, and oxygen.  
-        - **Insurance Billing**: We work with most major insurance providers—ask us about coverage.  
+        - **Established Expertise**: Our team has over 10 years of combined experience in medical transport and patient care coordination.
+        - **Safety First**: All vehicles are thoroughly sanitized before and after each trip. Drivers undergo specialized training and background checks.
+        - **ADA-Compliant Fleet**: We offer wheelchair lifts, securement systems, and spacious interiors to accommodate various mobility needs.
+        - **Insurance & Licensing**: Fully licensed, bonded, and insured to operate in Oregon; we adhere to all state and federal regulations.
         """
     )
 
-
-def show_services():
-    show_banner()
-    st.header("Our Services")
-    st.markdown(
-        """
-        **My Oregon Ride** offers a wide range of NEMT services to fit your needs:
-
-        1. **Wheelchair Transport**  
-           - Fully equipped wheelchair vans.  
-           - Secure tie-downs and fold-away ramps.  
-           - Door-to-door assistance.  
-        
-        2. **Ambulatory Transport**  
-           - For patients who can walk but need assistance getting to/from the vehicle.  
-           - Well-trained staff to provide any needed support.  
-        
-        3. **Stretcher Transport**  
-           - Comfortable stretchers with safety belts.  
-           - Oxygen and medical-grade reclining seats available.  
-        
-        4. **Long-Distance Trips**  
-           - We cover appointments up to 100 miles one-way.  
-           - Flat rate + per-mile fee (contact us for specifics).  
-        
-        5. **Scheduled & Same-Day Rides**  
-           - Book up to 30 days in advance or request same-day via phone.  
-        
-        6. **Insurance & Self-Pay Options**  
-           - We bill most Medicaid/Medicare plans directly.  
-           - Self-pay rates available upon request.  
-        """
-    )
-
-
-def show_fleet():
-    show_banner()
-    st.header("Our Fleet")
-    st.markdown(
-        """
-        We maintain a modern, well-inspected fleet to ensure safe and comfortable transportation:
-        """
-    )
-
-    st.markdown(
-        """
-        - **Wheelchair Van**  
-          ![Wheelchair Van](https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/wheelchair_van.jpg)  
-          *Equipped with hydraulic ramp, safety straps, and extra headroom.*
-
-        - **Stretcher Van**  
-          ![Stretcher Van](https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/stretcher_van.jpg)  
-          *Reclining stretcher, oxygen mount, and medical storage cabinet.*
-
-        - **Ambulatory Van**  
-          ![Ambulatory Van](https://raw.githubusercontent.com/yourusername/yourrepo/main/assets/ambulatory_van.jpg)  
-          *Standard van with fold-away seats, handrails, and gentle lift assistance.*
-        """
-    )
-    st.markdown("---")
+with col2:
+    st.markdown("### Why Choose My Oregon Ride?")
     st.write(
         """
-        All vehicles are:  
-        - Cleaned and sanitized after each ride  
-        - Maintained to the highest safety standards  
-        - Equipped with GPS tracking and two-way communication  
+        - **24/7 Availability**: Late-night or early-morning appointments? We’re on-call around the clock.
+        - **Flat & Transparent Rates**: No hidden fees. You’ll know your fare upfront.
+        - **Real-Time Tracking**: Receive live updates on your driver’s location and estimated arrival time.
+        - **Multilingual Drivers**: English, Kurdish, and Arabic-speaking staff to assist diverse communities.
+        - **Easy Scheduling**: Book online, via phone, or through our mobile-friendly website.
+        - **Insurance Billing**: We handle most major insurances and Medicaid/Medicare for seamless billing.
         """
     )
 
+st.markdown("---")
 
-def show_booking_form():
-    show_banner()
-    st.header("Book a Ride")
-    st.markdown(
+# Services Section
+st.markdown("## Our Services")
+st.write(
+    """
+    1. **Medical Appointments**  
+       Transportation to hospitals, clinics, dialysis centers, physical therapy sessions, and other medical facilities.  
+    2. **Routine Check-ups**  
+       Safe rides for routine doctor visits, dental check-ups, and specialist appointments.  
+    3. **Therapy & Rehab**  
+       Secure transport for physical therapy, occupational therapy, and rehabilitation centers.  
+    4. **Dialysis Transport**  
+       Dedicated, comfortable vans for patients attending dialysis sessions multiple times a week.  
+    5. **Pharmacy Runs**  
+       Convenient medication pick-up and delivery services if you cannot leave home.  
+    6. **Discharge Transport**  
+       Calm and supportive ride home from hospital discharge—no rush, no stress.
+    """
+)
+
+# Areas Served
+st.markdown("### Areas We Serve")
+areas = [
+    "Portland Metro (PDX, Gresham, Beaverton, Hillsboro)",
+    "Tigard & Lake Oswego",
+    "Beaverton & Tigard",
+    "Clackamas County (Oregon City, Gladstone)",
+    "Washington County (Hillsboro, Forest Grove, Cornelius)",
+    "Multnomah County (Portland, Troutdale, Fairview)",
+    "Clark County WA (Vancouver, Camas, Battle Ground)"
+]
+for area in areas:
+    st.write(f"- {area}")
+
+st.markdown("---")
+
+# Fleet & Safety
+st.markdown("## Our Fleet & Safety Protocols")
+fleet_img_col, fleet_text_col = st.columns([1, 2])
+
+with fleet_img_col:
+    st.image("fleet_sample.jpg", caption="Our ADA-Compliant Vehicle", use_column_width=True)
+
+with fleet_text_col:
+    st.write(
         """
-        Please fill out the form below to schedule your non-emergency medical transportation.  
-        One of our coordinators will reach out to confirm details and any special requirements.
-        """
-    )
-
-    with st.form(key="booking_form"):
-        col1, col2 = st.columns(2)
-
-        with col1:
-            full_name = st.text_input("Patient Name", max_chars=100)
-            phone = st.text_input(
-                "Phone Number", placeholder="e.g., (253) 561-5714"
-            )
-            email = st.text_input(
-                "Email Address", placeholder="e.g., name@example.com"
-            )
-            pickup_address = st.text_input("Pickup Address")
-            dropoff_address = st.text_input("Drop-Off Address")
-            appointment_date = st.date_input(
-                "Appointment Date", datetime.now().date()
-            )
-            appointment_time = st.time_input(
-                "Appointment Time", datetime.now().time()
-            )
-
-        with col2:
-            assistance_type = st.selectbox(
-                "Assistance Type",
-                [
-                    "Wheelchair Transport",
-                    "Stretcher Transport",
-                    "Ambulatory Transport",
-                    "Other",
-                ],
-            )
-            return_trip = st.checkbox("Need Return Trip?", value=False)
-            if return_trip:
-                return_date = st.date_input("Return Date", datetime.now().date())
-                return_time = st.time_input("Return Time", datetime.now().time())
-            else:
-                return_date = None
-                return_time = None
-
-            insurance_carrier = st.selectbox(
-                "Insurance Carrier (if applicable)",
-                ["Medicaid", "Medicare", "Private Insurance", "Self-Pay", "Other"],
-            )
-            notes = st.text_area("Additional Notes / Special Requirements", height=100)
-
-        submit_button = st.form_submit_button("Submit Booking Request")
-
-    if submit_button:
-        st.success(f"✅ Thank you, **{full_name}**! Your booking request has been received.")
-        st.write("**Summary of your request:**")
-        summary_md = f"""
-        - **Patient:** {full_name}  
-        - **Phone:** {phone}  
-        - **Email:** {email}  
-        - **Pickup:** {pickup_address} on {appointment_date} at {appointment_time.strftime("%H:%M")}  
-        - **Drop-Off:** {dropoff_address}  
-        - **Assistance:** {assistance_type}  
-        - **Return Trip:** {"Yes" if return_trip else "No"}  
-        """
-        if return_trip:
-            summary_md += f"- **Return On:** {return_date} at {return_time.strftime('%H:%M')}\n"
-        summary_md += f"- **Insurance / Pay:** {insurance_carrier}\n"
-        if notes:
-            summary_md += f"- **Notes:** {notes}\n"
-
-        st.markdown(summary_md)
-        st.info(
-            "Our dispatch team will call you within 1 business hour to confirm "
-            "rates, insurance billing, and finalize your reservation."
-        )
-
-
-def show_contact():
-    show_banner()
-    st.header("Contact Us")
-    st.markdown(
-        """
-        **My Oregon Ride**  
-        12070 SW Fischer Rd Apt A108  
-        Tigard, OR 97224  
-
-        📞 **Phone:** (253) 561-5714  
-        📧 **Email:** myoregonride@gmail.com  
-        
-        **Office Hours:**  
-        Monday – Friday: 7:00 AM – 7:00 PM  
-        Saturday – Sunday: 8:00 AM – 5:00 PM  
+        - **ADA-Accessible Vans**: Wheelchair ramps, lift systems, and securement points.  
+        - **Comfortable Seating**: Extra legroom, climate-controlled interiors, and cushioned seats.  
+        - **Sanitization**: Vehicles are deep-cleaned daily; high-touch areas disinfected between trips.  
+        - **GPS-Enabled**: Real-time navigation and route optimization to reduce travel time.  
+        - **Emergency Preparedness**: First-aid kits on board. Drivers trained in basic first aid and CPR.
         """
     )
-    st.markdown("**Follow us on social media:**")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("[Facebook](https://www.facebook.com/MyOregonRide)")
-    with col2:
-        st.markdown("[Instagram](https://www.instagram.com/MyOregonRide)")
-    with col3:
-        st.markdown("[LinkedIn](https://www.linkedin.com/company/my-oregon-ride)")
 
-    st.markdown("---")
-    st.subheader("Send Us a Message")
-    with st.form(key="contact_form"):
-        name = st.text_input("Your Name")
-        email_contact = st.text_input("Your Email")
-        subject = st.text_input("Subject")
-        message = st.text_area("Message", height=150)
-        contact_submit = st.form_submit_button("Send Message")
-    if contact_submit:
-        st.success(f"✅ Thank you, {name}! Your message has been sent.")
-        st.write("We will respond as soon as possible.")
+st.markdown("---")
 
-
-def show_faq():
-    show_banner()
-    st.header("Frequently Asked Questions (FAQ)")
-    faqs = {
-        "Do you accept insurance?": (
-            "Yes. We bill most Medicaid and Medicare plans directly. "
-            "We also accept major private insurers. Please have your insurance information handy when booking."
-        ),
-        "How far in advance should I schedule my ride?": (
-            "We recommend booking at least 24 hours in advance. "
-            "Same-day requests may be accommodated based on availability."
-        ),
-        "Are your vehicles wheelchair accessible?": (
-            "Absolutely. All our vans are fully equipped with hydraulic wheelchair ramps, "
-            "secure tie-downs, and seating to ensure safety and comfort."
-        ),
-        "What if my appointment runs late?": (
-            "Please notify us as soon as possible. We’ll do our best to accommodate any changes, "
-            "but additional fees may apply for extended wait times."
-        ),
-        "Do you provide oxygen or medical monitoring?": (
-            "Yes. Our stretcher vans can be equipped with oxygen mounts. "
-            "For extended medical monitoring, please inform us ahead of time so we can assign a certified EMT driver."
-        ),
-        "What is your cancellation policy?": (
-            "Cancellations made 2 hours before the scheduled pickup time are free of charge. "
-            "Late cancellations or no-shows may incur a fee."
-        ),
+# Testimonials Section
+st.markdown("## What Our Clients Say")
+testimonials = [
+    {
+        "quote": "My Oregon Ride made getting to my dialysis appointments so much easier! Always on time, polite drivers, and spotless vans.",
+        "client": "Emily R."
+    },
+    {
+        "quote": "I rely on their late-night service when I have urgent medical tests. Dependable 24/7 availability is a lifesaver!",
+        "client": "Michael S."
+    },
+    {
+        "quote": "Booking is super easy via their website. Insurance billing was seamless, and they took care of everything.",
+        "client": "Sarah L."
     }
-    for question, answer in faqs.items():
-        with st.expander(question):
-            st.write(answer)
+]
 
+for t in testimonials:
+    st.markdown(f"> *\"{t['quote']}\"*  ")
+    st.markdown(f"> — **{t['client']}**")
+    st.write("")
 
-# ——————————————————————————————————————————————————————————————
-# Main logic: render the selected page
-# ——————————————————————————————————————————————————————————————
-if page_selection == "Home":
-    show_home()
-elif page_selection == "About Us":
-    show_about()
-elif page_selection == "Services":
-    show_services()
-elif page_selection == "Fleet":
-    show_fleet()
-elif page_selection == "Book a Ride":
-    show_booking_form()
-elif page_selection == "Contact":
-    show_contact()
-elif page_selection == "FAQ":
-    show_faq()
+st.markdown("---")
+
+# Contact Section
+st.markdown("## Contact Us")
+contact_col1, contact_col2 = st.columns(2)
+
+with contact_col1:
+    st.markdown("**Phone**")
+    st.write("📞 253-561-5714")
+    st.markdown("**Email**")
+    st.write("✉️ myoregonride@gmail.com")
+    st.markdown("**Address**")
+    st.write("🏢 12070 SW Fischer Rd, Apt A108, Tigard, OR 97224")
+    st.markdown("**24/7 Dispatch Line**")
+    st.write("🚐 Available Anytime—Call or Text")
+
+with contact_col2:
+    map_image = Image.open("map_placeholder.png")  # Place a map placeholder or actual map image in the repo
+    st.image(map_image, caption="Tigard, OR Office Location", use_column_width=True)
+
+st.markdown("---")
+
+# Footer
+st.markdown(
+    """
+    <div style='text-align: center; color: #7f8c8d; font-size: 0.9rem; margin-top: 2rem;'>
+    © 2025 My Oregon Ride LLC | All Rights Reserved &nbsp;|&nbsp; Designed with care for our community
+    </div>
+    """,
+    unsafe_allow_html=True
+)
